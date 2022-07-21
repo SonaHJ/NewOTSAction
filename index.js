@@ -358,8 +358,7 @@ async function validateAssetId(serverStore, asset) {
       var gotId = false;
       if (total > 0) {
         for (var i = 0; i < total; i++) {
-          retrievedPath = parsedJSON.content[i].path;
-          retrievedRepoId = parsedJSON.content[i].repository_id;
+          retrievedAssetId = parsedJSON.content[i].id;
           if (
             retrievedAssetId == asset.getAssetId 
           ) {
