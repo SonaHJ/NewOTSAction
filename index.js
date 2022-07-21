@@ -320,7 +320,6 @@ function isEmptyOrSpaces(input) {
 }
 
 async function validateAssetId(serverStore, asset) {
-  var assetName = path.parse(asset.getFilePath).name;
   var encodedAssetId = urlencode(asset.getAssetId);
   var encodedBranchName = urlencode(asset.getBranch);
   var testsListURL =
@@ -376,18 +375,18 @@ async function validateAssetId(serverStore, asset) {
             asset.getBranch +
             " in the project " +
             asset.getProject +
-            ". Please check the File path field in the task."
+            ". Please check the AssetId field in the task."
           );
         }
       } else {
         throw new Error(
-          "The file path " +
+          "The AssetId " +
           asset.getAssetId +
           " was not found in the branch " +
           asset.getBranch +
           " in the project " +
           asset.getProject +
-          ". Please check the File path field in the task."
+          ". Please check the AssetId field in the task."
         );
       }
     })
