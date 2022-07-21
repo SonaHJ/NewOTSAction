@@ -320,16 +320,18 @@ function isEmptyOrSpaces(input) {
 }
 
 async function validateAssetId(serverStore, asset) {
-  var assetId = urlencode(asset.getAssetId);
+  var assetName = path.parse(asset.getFilePath).name;
+  var encodedAssetId = urlencode(asset.getAssetId);
   var encodedBranchName = urlencode(asset.getBranch);
   var testsListURL =
     serverStore.getServerUrl +
     "rest/projects/" +
     asset.getProjectId +
-    "/assets/" +
-    assetId +
-    "/" +
-    encodedBranchName + "/";
+    "/assets/?assetTypes=EXECUTABLE&assetIds=" +
+    encodedAssetId +
+    "&revision=" +
+    encodedBranchName +
+    "&deployable=true";
 
   await accessTokenGen(serverStore);
 
@@ -350,54 +352,43 @@ async function validateAssetId(serverStore, asset) {
           response.data
         );
       }
-	  console.log("response"+ response.status);
-	  console.log("response"+ response);
-	   console.log("response.data"+ response.data);
-	   console.log("response.data.totalElements"+ response.data.totalElements);
       var parsedJSON = response.data;
       var total = parsedJSON.totalElements;
       var retrievedAssetId;
-	  console.log("response"+ response);
-	   console.log("response.data"+ parsedJSON);
-	   console.log("response.data.totalElements"+ total);
-	   console.log("response.data.totalElements"+ parsedJSON.length);
       var gotId = false;
       if (total > 0) {
         for (var i = 0; i < total; i++) {
-          retrievedAssetId = parsedJSON.content[i].id;
+          retrievedPath = parsedJSON.content[i].path;
           retrievedRepoId = parsedJSON.content[i].repository_id;
-		console.log(retrievedAssetId + "= " + asset.getAssetId);
-		console.log(retrievedAssetId == asset.getAssetId);
           if (
-            retrievedAssetId == asset.getAssetId
+            retrievedAssetId == asset.getAssetId 
           ) {
-            asset.setAssetId(parsedJSON.content[i].id);
-            asset.setExternalType(parsedJSON.content[i].external_type);
-            asset.setDesktopProjectId(parsedJSON.content[i].desktop_project_id);
+            asset.setExternalType = parsedJSON.content[i].external_type;
+            asset.setDesktopProjectId = parsedJSON.content[i].desktop_project_id;
             gotId = true;
             return true;
           }
         }
         if (!gotId) {
           throw new Error(
-            "The assetId " +
+            "The AssetId " +
             asset.getAssetId +
             " was not found in the branch " +
             asset.getBranch +
-            " corresponding to the project " +
+            " in the project " +
             asset.getProject +
-            ". Please check the assetId field in the task."
+            ". Please check the File path field in the task."
           );
         }
       } else {
         throw new Error(
-          "The assetId " +
+          "The file path " +
           asset.getAssetId +
           " was not found in the branch " +
           asset.getBranch +
           " in the project " +
           asset.getProject +
-          ". Please check the assetId field in the task."
+          ". Please check the File path field in the task."
         );
       }
     })
