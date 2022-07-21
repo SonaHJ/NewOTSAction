@@ -16,5 +16,5 @@ jobs:
             teamspace: Initial Team Space
             project: A_P1
             branch: master
-            assetId: RITTestINT/Logical/calculator.wsc/Add.opr/AddTest.tsq
-            environment: civcez376
+            assetId: 7a8b2c4b-d844-4954-8b2c-4bd8442954eb
+            environment: LP2-US-51628490
